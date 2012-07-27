@@ -5,7 +5,6 @@ import de.timroes.axmlrpc.XMLRPCException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -29,19 +28,30 @@ public class PypiXMLRPCClient {
     }
 
     /**
+     *
+     * @param url Pypi url, ex.: "http://testpypi.python.org/pypi" or "http://pypi.python.org/pypi"
+     * @throws PypiXMLRPCException
+     */
+    public PypiXMLRPCClient(URL url) throws PypiXMLRPCException {
+        this.client = new XMLRPCClient(url, XMLRPCClient.FLAGS_NIL);
+    }
+
+    /**
      * Retrieve a list of the package names registered with the package index. Returns a list of name strings.
      * @return List of Python package names
      * @throws PypiXMLRPCException
      */
     public String[] listPackages() throws PypiXMLRPCException {
-        String[] packages;
         try {
             Object[] result = (Object[])client.call("list_packages");
-            packages = Arrays.copyOf(result, result.length, String[].class);
+            String[] results = new String[result.length];
+            for(int i=0; i < result.length; i++) {
+                results[i] = (String) result[i];
+            }
+            return results;
         } catch (XMLRPCException e) {
             throw new PypiXMLRPCException(e.getMessage());
         }
-        return packages;
     }
 
     /**
@@ -64,14 +74,16 @@ public class PypiXMLRPCClient {
      * @throws PypiXMLRPCException
      */
     public String[] packageReleases(String packageName, boolean showHidden) throws PypiXMLRPCException {
-        String[] releases;
         try {
             Object[] result = (Object[])client.call("package_releases", new Object[]{ packageName, showHidden });
-            releases = Arrays.copyOf(result, result.length, String[].class);
+            String[] results = new String[result.length];
+            for(int i=0; i < result.length; i++) {
+                results[i] = (String) result[i];
+            }
+            return results;
         } catch (XMLRPCException e) {
             throw new PypiXMLRPCException(e.getMessage());
         }
-        return releases;
     }
 
     /**
@@ -83,13 +95,11 @@ public class PypiXMLRPCClient {
      * @throws PypiXMLRPCException
      */
     public HashMap releaseData(String packageName, String version) throws PypiXMLRPCException {
-        HashMap result;
         try {
-            result = (HashMap)client.call("release_data", new Object[]{ packageName, version });
-            //releases = Arrays.copyOf(result, result.length, String[].class);
+            HashMap result = (HashMap)client.call("release_data", new Object[]{ packageName, version });
+            return result;
         } catch (XMLRPCException e) {
             throw new PypiXMLRPCException(e.getMessage());
         }
-        return result;
     }
 }
