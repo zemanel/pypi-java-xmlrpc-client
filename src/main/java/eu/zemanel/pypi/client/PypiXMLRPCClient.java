@@ -5,7 +5,10 @@ import de.timroes.axmlrpc.XMLRPCException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Pypi XMLRPC client
@@ -96,10 +99,46 @@ public class PypiXMLRPCClient {
      */
     public HashMap releaseData(String packageName, String version) throws PypiXMLRPCException {
         try {
-            HashMap result = (HashMap)client.call("release_data", new Object[]{ packageName, version });
-            return result;
+            return (HashMap)client.call("release_data", new Object[]{ packageName, version });
         } catch (XMLRPCException e) {
             throw new PypiXMLRPCException(e.getMessage());
         }
+    }
+
+    /**
+     *
+     * @param params Search spec (parameters)
+     * @param searchOperator Search operator for different fields, "and" (the default) or "or".
+     * @return List of results
+     * @throws PypiXMLRPCException
+     */
+    public HashMap<String, String>[] search(Map<SearchParam, String[]> params, SearchOperator searchOperator) throws PypiXMLRPCException {
+        try {
+            // prepare call search parameters (convert search fields from enums to String values)
+            Map<String, String[]> paramMap = new HashMap<String, String[]>();
+            for(Map.Entry<SearchParam, String[]> param: params.entrySet()) {
+                paramMap.put((param.getKey()).getValue(), param.getValue());
+            }
+            // call remote method
+            Object[] result = (Object[]) client.call("search", paramMap, searchOperator.name());
+            // convert results to array
+            HashMap[] results = new HashMap[result.length];
+            for(int i=0; i < result.length; i++) {
+                results[i] = (HashMap<String, String>)result[i] ;
+            }
+            return results;
+        } catch (XMLRPCException e) {
+            throw new PypiXMLRPCException(e.getMessage());
+        }
+    }
+
+    /**
+     * Search the Pypi index using default operator ("and")
+     * @param params Search spec (parameters)
+     * @return List of results
+     * @throws PypiXMLRPCException
+     */
+    public HashMap<String, String>[] search(Map<SearchParam, String[]> params) throws PypiXMLRPCException {
+        return this.search(params, SearchOperator.AND);
     }
 }

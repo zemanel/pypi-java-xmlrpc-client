@@ -3,7 +3,10 @@ package eu.zemanel.pypi.client;
 import junit.framework.TestCase;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -52,5 +55,20 @@ public class PypiXMLRPCClientTest extends TestCase {
         String version = "3.3.5";
         HashMap result = (HashMap) this.client.releaseData("spam", version);
         this.assertTrue(result.get("version").equals(version));
+    }
+
+    /**
+     *
+     * @throws Exception
+     */
+    public void testSearch() throws Exception {
+        Map<SearchParam, String[]> params = new HashMap<SearchParam, String[]>();
+        params.put(SearchParam.NAME, new String[]{"nester"});
+        HashMap[] result1 = this.client.search(params, SearchOperator.OR);
+        HashMap[] result2 = this.client.search(params, SearchOperator.AND);
+        HashMap[] result3 = this.client.search(params);
+        this.assertTrue(result1.length > 0);
+        this.assertTrue(result2.length > 0);
+        this.assertTrue(result3.length > 0);
     }
 }
