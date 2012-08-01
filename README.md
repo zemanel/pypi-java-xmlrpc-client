@@ -31,13 +31,20 @@ To use it on your Maven project, add it as a dependency on your pom.xml file:
 Implemented xmlrpc calls
 ------------------------
 
+Documented (from http://wiki.python.org/moin/PyPiXmlRpc) :
+
     [X] list_packages()
     [X] package_releases(package_name, show_hidden=False)
-    [ ] package_roles(package_name)
-    [ ] user_packages(user)
-    [ ] release_downloads(package_name, version)
-    [ ] release_urls(package_name, version)
+    [X] package_roles(package_name)
+    [x] user_packages(user)
+    [X] release_downloads(package_name, version)
+    [X] release_urls(package_name, version)
     [X] release_data(package_name, version)
-    [ ] search(spec[, operator])
-    [ ] browse(classifiers)
+    [X] search(spec[, operator])
+    [x] browse(classifiers)
     [ ] changelog(since)
+
+Undocumented (from source code):
+
+    [x] updated_releases(since)
+    [x] changed_packages

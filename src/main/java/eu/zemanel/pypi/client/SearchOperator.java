@@ -6,7 +6,7 @@ package eu.zemanel.pypi.client;
 public enum SearchOperator {
 
     AND("and"),
-    OR("version");
+    OR("or");
     private final String value;
 
     SearchOperator(String value) {
